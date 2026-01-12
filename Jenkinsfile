@@ -36,7 +36,7 @@ pipeline {
         stage('Build Docker image'){
             agent {
                 docker{
-                    image 'docker:26-cli''
+                    image 'docker:26-cli'
                     reuseNode true
                     args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"
                 }
