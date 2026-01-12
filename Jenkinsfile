@@ -6,7 +6,7 @@ pipeline {
         AWS_DEFAULT_REGION = 'us-east-1'
         AWS_ECS_CLUSTER = 'learn-jenkinsapp-cluster-prod'
         AWS_ECS_SERVICE_PROD = 'LearnJenkinsApp-Service-Prod'
-        AWS_ECS_TD_PROD = 'LearnJenkinsApp-TaskDefinition'
+        AWS_ECS_TD_PROD = 'LearnJenkinsApp-TaskDefinition-Prod'
     }
 
 
@@ -33,8 +33,20 @@ pipeline {
         }
 
         stage('Build Doker image'){
+            agent {
+                docker{
+                    image 'amazon/aws-cli'
+                    reuseNode true
+                    args "-u root -v /var/run/docker.sock:/var/run/docker/sock --entrypoint=''"
+                }
+            }
+
             steps {
-                sh 'docker build -t myjenkinsapp .'
+                sh '''
+                    amazon-linux-extras install docker
+                    docker build -t myjenkinsapp .
+
+                    '''
             }
         }
         stage ('Deploy to AWS'){
